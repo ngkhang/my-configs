@@ -1,12 +1,25 @@
 # Terminal and PowerShell Setup
 
 - [Terminal and PowerShell Setup](#terminal-and-powershell-setup)
+  - [Prerequisites](#prerequisites)
   - [Windows Terminal](#windows-terminal)
     - [Installation](#installation)
     - [Configuration](#configuration)
   - [PowerShell v7](#powershell-v7)
     - [Installation](#installation-1)
     - [Profile Configuration](#profile-configuration)
+  - [Oh My Posh](#oh-my-posh)
+  - [Terminal-Icons](#terminal-icons)
+  - [Z - Directory jumper](#z---directory-jumper)
+  - [Fzf - Fuzzy finder](#fzf---fuzzy-finder)
+  - [Posh-Git](#posh-git)
+  - [Final Profile](#final-profile)
+
+## Prerequisites
+
+- Windows 10/11
+- Git installed (for posh-git)
+- Scoop package manager (install from [scoop.sh](https://scoop.sh))
 
 ## Windows Terminal
 
@@ -122,6 +135,18 @@ This setup uses a custom config directory (`$env:USERPROFILE\.config\powershell`
 4. Add this content to `ngkhang_profile.ps1`
 
    ```powershell
+    #========= PSReadLine =========#
+   Set-PSReadLineOption -EditMode Emacs
+   Set-PSReadLineOption -BellStyle None
+   Set-PSReadLineKeyHandler -Chord 'Ctrl+d' -Function DeleteChar
+   Set-PSReadLineOption -PredictionSource HistoryAndPlugin
+   Set-PSReadLineOption -PredictionViewStyle ListView
+   Set-PSReadLineKeyHandler -Key UpArrow -Function HistorySearchBackward
+   Set-PSReadLineKeyHandler -Key DownArrow -Function HistorySearchForward
+   Set-PSReadLineOption -ShowToolTips
+   Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+   Set-PSReadLineKeyHandler -Key Tab -Function MenuComplete
+
     #========= Alias =========#
     Set-ALias g git
 
@@ -239,3 +264,112 @@ This setup uses a custom config directory (`$env:USERPROFILE\.config\powershell`
 
    # Or restart Windows Terminal
    ```
+
+## Oh My Posh
+
+1. Install Oh My Posh
+
+   ```powershell
+   # Install using winget
+   winget install JanDeDobbeleer.OhMyPosh --source winget
+
+   # Install using scoop
+   scoop install oh-my-posh
+
+   # Verify installation
+   oh-my-posh --version
+   ```
+
+2. Custom Themes, Font, etc. in [Oh My Posh: Docs](https://ohmyposh.dev/docs). Copy [`ngkhang.omp.json`](./ngkhang.omp.json) to `.config/powershell/`
+3. Edit your profile:
+
+   ```powershell
+   notepad $env:USERPROFILE\.config\powershell\ngkhang_profile.ps1
+   ```
+
+4. Add Oh My Posh initialization at the top of the file:
+
+   ```powershell
+   $omp_config = Join-Path $PSScriptRoot "ngkhang.omp.json"
+   oh-my-posh init pwsh --config $omp_config | Invoke-Expression
+   ```
+
+5. Reload Terminal: `. $PROFILE`
+
+Custom themes at Oh My Posh Docs
+
+## Terminal-Icons
+
+1. Install
+
+   ```powershell
+   Install-Module -Name Terminal-Icons -Repository PSGallery -Force
+   ```
+
+2. Import module in to `ngkhang_profile.ps1`:
+
+   ```powershell
+   Import-Module -Name Terminal-Icons
+   ```
+
+## Z - Directory jumper
+
+1. Install
+
+   ```powershell
+   Install-Module -Name z -Force
+   ```
+
+2. Add to `ngkhang_profile.ps1`:
+
+   ```powershell
+   Import-Module z
+   ```
+
+3. Usage examples
+
+   ```powershell
+   z documents      # Jump to most frequent directory matching "documents"
+   z -l projects    # List matching directories
+   ```
+
+## Fzf - Fuzzy finder
+
+1. Install fzf and PowerShell module
+
+   ```powershell
+   scoop install fzf
+   Install-Module -Name PSFzf -Force
+   ```
+
+2. Add to `ngkhang_profile.ps1`:
+
+   ```powershell
+   Import-Module PSFzf
+   Set-PsFzfOption -PSReadlineChordProvider 'Ctrl+f' -PSReadlineChordReverseHistory 'Ctrl+r'
+   ```
+
+**Keybindings**:
+
+- `Ctrl+r` - Search command history
+- `Ctrl+f` - Search files in current directory
+
+## Posh-Git
+
+1. Install
+
+   ```powershell
+   scoop bucket add extras
+   scoop install posh-git
+   ```
+
+2. Add to `ngkhang_profile.ps1`:
+
+   ```powershell
+   Import-Module posh-git
+   ```
+
+## Final Profile
+
+- [ngkhang_profile.ps1](./ngkhang_profile.ps1)
+- [ngkhang.omp.json](./ngkhang.omp.json)
