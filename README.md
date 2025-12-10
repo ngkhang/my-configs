@@ -3,7 +3,7 @@
 This is my personal configuration for my tools using
 
 - Test update git config global
-- Test GPG key 3
+- Test GPG key 4
 
 - [My Development Environment Configs 👋](#my-development-environment-configs-)
   - [Prerequisites](#prerequisites)
